@@ -1,7 +1,8 @@
-"""Unit tests for the task models and the in-memory store."""
+"""Unit tests for the task models and the Postgres store."""
 
 from __future__ import annotations
 
+import threading
 from datetime import date
 from typing import Any
 
@@ -9,7 +10,9 @@ import pytest
 from pydantic import ValidationError
 
 from taskboard21_api.tasks.models import TaskCreate
-from taskboard21_api.tasks.store import TaskStore, get_task_store
+from taskboard21_api.tasks.store import StorageUnavailableError, TaskStore, get_task_store
+
+UNREACHABLE_DSN = "postgresql://u:p@127.0.0.1:1/x"
 
 
 def test_valid_title_kept_exactly():
@@ -87,3 +90,46 @@ def test_store_list_returns_copy():
 
 def test_get_task_store_is_singleton():
     assert get_task_store() is get_task_store()
+
+
+def test_ensure_schema_is_idempotent(database_url: str):
+    store = TaskStore(database_url)
+    store.ensure_schema()
+    store.ensure_schema()
+    TaskStore(database_url).ensure_schema()
+    assert store.ping() is True
+
+
+def test_ensure_schema_from_two_threads(database_url: str):
+    errors: list[Exception] = []
+
+    def run() -> None:
+        try:
+            TaskStore(database_url).ensure_schema()
+        except Exception as exc:
+            errors.append(exc)
+
+    threads = [threading.Thread(target=run) for _ in range(2)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    assert errors == []
+
+
+def test_nul_title_rejected():
+    with pytest.raises(ValidationError):
+        TaskCreate(title="a\x00b")
+
+
+def test_unreachable_dsn_raises_storage_unavailable():
+    store = TaskStore(UNREACHABLE_DSN)
+    with pytest.raises(StorageUnavailableError):
+        store.list()
+    with pytest.raises(StorageUnavailableError):
+        store.add(TaskCreate(title="x"))
+
+
+def test_ping_false_when_unreachable_or_unconfigured():
+    assert TaskStore(UNREACHABLE_DSN).ping() is False
+    assert TaskStore("").ping() is False

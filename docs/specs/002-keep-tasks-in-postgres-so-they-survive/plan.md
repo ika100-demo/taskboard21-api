@@ -10,6 +10,7 @@ tasks:
     covers: [AC-002.1, AC-002.2, AC-002.3, AC-002.4, AC-002.5, AC-002.6]
     parallel_safe: true
     depends_on: []
+    done: true
   - id: t2
     title: Answer 503 on storage outage, check the database in /ready, apply the schema at startup
     files: [src/taskboard21_api/tasks/router.py, src/taskboard21_api/main.py, docs/env-vars.md]

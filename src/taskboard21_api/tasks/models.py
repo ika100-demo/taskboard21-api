@@ -23,6 +23,8 @@ class TaskCreate(BaseModel):
     def _check_title(cls, v: str) -> str:
         if len(v) > MAX_TITLE_LENGTH:
             raise ValueError(f"title must be at most {MAX_TITLE_LENGTH} characters")
+        if "\x00" in v:
+            raise ValueError("title must not contain a NUL character")
         if not v.strip():
             raise ValueError("title must not be blank")
         return v
