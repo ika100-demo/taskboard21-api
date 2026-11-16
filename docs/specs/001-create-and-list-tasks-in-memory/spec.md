@@ -25,7 +25,7 @@ As an API client, I want to list all tasks, so that I can show the board.
 - **AC-001.3** Given the service is running, when a client sends `POST /tasks` with the title missing, not a string, empty, only whitespace, or longer than 200 characters, then the response is 422 with an error body naming the field `title`, and no task is created.
 - **AC-001.4** Given the service is running, when a client sends `POST /tasks` with a `due_date` that is not a valid calendar date in `YYYY-MM-DD` form (for example "2026-02-30" or "tomorrow"), then the response is 422 with an error body naming the field `due_date`, and no task is created.
 - **AC-001.5** Given tasks were created in the order A, B, C, when a client sends `GET /tasks`, then the response is 200 with a JSON array of the three tasks in creation order, each with `id`, `title` and `due_date` exactly as returned when it was created. (smoke)
-- **AC-001.6** Given no task has been created since the service started, when a client sends `GET /tasks`, then the response is 200 with an empty JSON array.
+- ~~**AC-001.6**~~ superseded by AC-002.2 on 2026-11-16: Given no task has been created since the service started, when a client sends `GET /tasks`, then the response is 200 with an empty JSON array.
 - **AC-001.7** Given two tasks created with the same title, when a client lists tasks, then both appear, each with its own distinct `id`.
 
 ## Non-goals
@@ -58,3 +58,4 @@ As an API client, I want to list all tasks, so that I can show the board.
 - 2026-11-16 approved
 - 2026-11-16 building
 - 2026-11-16 done
+- 2026-11-16 AC-001.6 superseded by AC-002.2
