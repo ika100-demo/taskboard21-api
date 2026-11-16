@@ -9,6 +9,12 @@ Configuration is read exclusively from environment variables. Defaults below are
 | `PORT` | `8080` | HTTP port the service listens on. |
 | `LOG_LEVEL` | `INFO` | Logging level. One of `DEBUG`, `INFO`, `WARNING`, `ERROR`. |
 
+## Storage
+
+| Variable | Default | Description |
+|---|---|---|
+| `DATABASE_URL` | _(unset)_ | Postgres connection URL for the task store. Unset means `/ready` and the task endpoints answer 503. Injected by the gitops entry from the `postgres` resource. |
+
 ## Observability
 
 | Variable | Default | Description |
