@@ -79,7 +79,8 @@ class TaskStore:
                 ).fetchone()
         except (psycopg.OperationalError, psycopg.InterfaceError) as exc:
             raise self._unavailable(exc) from exc
-        assert row is not None
+        if row is None:
+            raise RuntimeError("INSERT ... RETURNING returned no row")
         task = Task(id=str(row[0]), title=str(row[1]), due_date=row[2])  # type: ignore[arg-type]
         logger.info("task_created", task_id=task.id)
         return task
