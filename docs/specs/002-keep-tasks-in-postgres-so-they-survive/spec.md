@@ -1,7 +1,7 @@
 ---
 spec_id: 002-keep-tasks-in-postgres-so-they-survive
 title: Keep tasks in Postgres so they survive restarts and are shared by every instance
-status: approved
+status: building
 priority: P1
 shape: service-python
 parent: ika100-demo/taskboard21-gitops:001-persistent-tasks-in-postgres-with-a-web
@@ -104,3 +104,4 @@ Ids stay server-assigned strings (uuid4 is fine). Tests need a real Postgres (e.
 
 - 2026-11-16 created from the system plan, with its criteria (spec 147)
 - 2026-11-16 approved
+- 2026-11-16 building
